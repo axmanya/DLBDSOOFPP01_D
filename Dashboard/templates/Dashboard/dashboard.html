@@ -1,0 +1,270 @@
+{% load static %}
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/Dashboard/style.css">
+    <title>{{ title }}</title>
+
+    <script type="text/javascript">
+        // the following javascript event jumps to the current hour in the calendar
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentDate = new Date();
+            // get the hour jump mark
+            let jumpMark = document.getElementById('h' + currentDate.getHours());
+
+            // fetch the calendar div
+            let calendar = document.getElementById('footer-content');
+
+            // scroll to the hour jump marks position and reduct by the calenders offset height and 50px for the footer
+            calendar.scrollTo(0, jumpMark.getBoundingClientRect().top - calendar.offsetHeight - 50);
+        })
+    </script>
+</head>
+<body>
+
+<!--Title element with student and degree details-->
+<div id="title">
+    <!--Element displaying the student name-->
+    <div id="student-name"><span>{{ studentDetail.student_name }}</span></div>
+
+    <!--Title element with student and degree details-->
+    <div id="student-degree">
+        <span>{{ studentDetail.university_name }}</span>
+        -
+        <b>{{ studentDetail.degree_name }}</b>
+    </div>
+
+    <!--Form elements to switch student and university for testing purposes-->
+    <div id="selection">
+        {% if universities|length > 1 %}
+            <!--Form to switch university only shown if more than one university exists-->
+            <form method="post" action="/dashboard/" id="university-selection">
+                {% csrf_token %}
+                <input type="hidden" name="formType" value="universitySelection">
+                <select name="university_id" required autocomplete="off">
+                    {% for university in universities %}
+                        <option value="{{ university.university_id }}"
+                                {% if request.session.university_id|compare_ids:university.university_id %}
+                                selected="selected" {% endif %}
+                        >{{ university.university_name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Switch">
+            </form>
+        {% endif %}
+        {% if students|length > 1 %}
+            <!--Form to switch student only shown if more than one student exists-->
+            <form method="post" action="/dashboard/" id="student-selection">
+                {% csrf_token %}
+                <input type="hidden" name="formType" value="studentSelection">
+                <select name="student_id" required autocomplete="off">
+                    {% for student in students %}
+                        <option value="{{ student.student_id }}"
+                                {% if request.session.student_id|compare_ids:student.student_id %} selected {% endif %}
+                        >{{ student.student_name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Switch">
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<!--Header element with the course list and grade form-->
+<div id="header">
+    <!--Display the main content with the course and grade list-->
+    <div id="header-content">
+        <table>
+            <thead>
+            <tr>
+                <th>{% get_course_sort_link request 'name' %}</th>
+                <th>{% get_course_sort_link request 'progress' %}</th>
+                <th></th>
+                <th>{% get_course_sort_link request 'grade' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for course in courses %}
+                <tr
+                        style="background-color: {% if course.grade >= 1 and course.grade < 4 %} #6fb66f {% elif course.spent_hours > course.expected_hours or course.grade > 4 %} #b97272 {% else %} white{% endif %}"
+                >
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.formatted_progress }}</td>
+
+                    {% if course.grade == 0 %}
+                        <td>{{ course.spent_hours }} / {{ course.expected_hours }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+
+                    {% if course.grade > 0 %}
+                        <td>{{ course.grade }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!--Display the sidebar containing the grade form-->
+    <div id="head-sidebar">
+        <div id="grade-details">
+            <div id="ects-box">
+                <div id="ects-chart"
+                     style="background-image: conic-gradient(
+                             black {% get_conic_gradient_degrees studentDetail.ects_goal studentDetail.ects_collected %}deg,
+                             white 0
+                             );"
+                ></div>
+                <div id="ects-legend">
+                    <div id="etc-display">
+                        <b>{{ studentDetail.ects_collected }} / {{ studentDetail.ects_goal }}</b>
+                    </div>
+                    <div id="grade-avg">
+                        <b>{% get_grade_avg request %} avg</b>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="grade-form">
+            <form action="/dashboard/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="formType" value="gradeManagement">
+                <div>
+                    <label for="course">Course:</label>
+                    <select id="course_id" name="course_id" required>
+                        <option disabled selected value>--Select Course--</option>
+                        {% for course in courses %}
+                            <option value="{{ course.course_id }}">{{ course.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="grade">Grade:</label>
+                    <input id="grade" type="number" step=".1" min="0" max="6" placeholder="1.0" name="grade" required>
+                </div>
+                <input class="btn" type="submit" value="Save">
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Footer element with the calendar and time plan form-->
+<div id="footer">
+    <!--Display the main content with the time plan calendar-->
+    <div id="footer-content">
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                <th>MO <p>{% get_formatted_date calendarWeek.week_days.0.date %}</p></th>
+                <th>TU <p>{% get_formatted_date calendarWeek.week_days.1.date %}</p></th>
+                <th>WE <p>{% get_formatted_date calendarWeek.week_days.2.date %}</p></th>
+                <th>TH <p>{% get_formatted_date calendarWeek.week_days.3.date %}</p></th>
+                <th>FR <p>{% get_formatted_date calendarWeek.week_days.4.date %}</p></th>
+                <th>SA <p>{% get_formatted_date calendarWeek.week_days.5.date %}</p></th>
+                <th>SU <p>{% get_formatted_date calendarWeek.week_days.6.date %}</p></th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--loop and render amount of hours in first entry expected to be 24-->
+            {% for hour in calendarWeek.week_days.0.time_slots %}
+                <tr class="calendarRow">
+                    <td style="width: 20px ; margin:0; padding: 0;" id="h{{ hour.0 }}">
+                        <table class="timeSlot">
+                            {% get_array_index_value calendarWeek.week_days.0.time_slots hour.0 as time_blocks %}
+                            {% for time_block in time_blocks.1 %}
+                                <tr>
+                                    <td class="timeSlotHeader">{% get_formatted_time time_block.slot_time.hour time_block.slot_time.minute %}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </td>
+                    <!--Loop and render week days-->
+                    {% for week_day in calendarWeek.week_days %}
+                        {% get_array_index_value week_day.time_slots hour.0 as time_blocks %}
+                        <td class="timeSlotFrame">
+                            <table class="timeSlot">
+                                {% for time_block in time_blocks.1 %}
+                                    <tr>
+                                        {% if time_block.entry_name %}
+                                            <td style="background: {{ time_block.bg_color }}; color: {{ time_block.fg_color }}; overflow: hidden; text-overflow: ellipsis">
+                                                <div class="calendarRowText"> {{ time_block.entry_name }}
+                                                    <div>
+                                            </td>
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: left"><a class="calendarWeekNavigator"
+                                                href="?offset={% get_offset request -1 %}"><== Back</a></td>
+                <td style="text-align: center" class="calendarWeekNavigator">{% get_calendar_week request %}</td>
+                <td style="text-align: right"><a class="calendarWeekNavigator"
+                                                 href="?offset={% get_offset request 1 %}">Next ==></a></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!--Display the sidebar containing the time plan form-->
+    <div id="footer-sidebar">
+        <form action="/dashboard/" id="timePlanManagement" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="course">Course:</label>
+                <select id="course" name="course_id" required>
+                    <option disabled selected value>--Select Course--</option>
+                    {% for course in courses %}
+                        {% if course.progress < 1 %}
+                            <option value="{{ course.course_id }}">{{ course.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input type="hidden" name="formType" value="timePlanManagement">
+                <label for="from_date">From:</label>
+                <input id="from_date" type="date" name="from_date" value="{% get_today_as_us_format %}" required>
+                <input id="from_time" type="time" name="from_time" step="900"
+                       value="{% get_current_hour_with_offset 0 %}" required>
+                <label for="until_date">Until:</label>
+                <input id="until_date" type="date" name="until_date" value="{% get_today_as_us_format %}" required>
+                <input id="until_time" type="time" name="until_time" step="900"
+                       value="{% get_current_hour_with_offset 1 %}" required>
+            </div>
+            <input class="btn" type="submit" value="Save">
+        </form>
+
+        {% if formErrors|length > 0 %}
+            <div id="form-error-container">
+                {% for error in formErrors %}
+                    <p class="formError">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

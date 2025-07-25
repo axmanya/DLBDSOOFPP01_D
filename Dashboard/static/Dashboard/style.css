@@ -1,0 +1,245 @@
+/*
+This file contains cascading style sheets for the design of the dashboard objects
+*/
+
+body {
+    font-family: Arial, serif;
+    min-width: 1000px;
+}
+
+#header-content {
+    max-height: 25vh;
+    overflow: scroll;
+}
+
+#header-content table, #footer-content table {
+    width: 100%;
+}
+
+table {
+    border-spacing: 0;
+}
+
+#footer-content {
+    max-height: 55vh;
+    overflow: scroll;
+}
+
+#header-content th {
+    text-align: start;
+}
+
+#header-content td, #footer-content tfoot td {
+    padding: 10px;
+}
+
+#footer-content td {
+    padding: 0 5px;
+}
+
+#student-name, #student-degree, #selection {
+    float: left;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#student-name {
+    width: 20%;
+}
+
+#student-degree {
+    width: 50%;
+}
+
+#selection {
+    width: 25%;
+}
+
+#selection input {
+    width: 22%;
+}
+
+#selection select {
+    width: 74%;
+}
+
+#selection input, #selection select {
+    color: white;
+    background: #534b4b;
+    padding: 2px;
+}
+
+
+#footer-content p {
+    margin: 7px 0;
+}
+
+
+#title {
+    background: #222222;
+    color: white;
+    padding: 20px 25px 20px 25px;
+    margin: -10px -10px 20px -10px;
+    min-height: 50px;
+}
+
+#head-sidebar, #footer-sidebar {
+    width: 28%;
+    float: right;
+}
+
+#header-content, #footer-content {
+    width: 70%;
+    float: left;
+}
+
+#header {
+    overflow: hidden;
+    height: 300px;
+}
+
+#footer {
+    margin-bottom: 20px;
+    padding-top: 20px;
+    border-top: 2px black solid;
+    width: 100%;
+}
+
+#grade-details {
+    margin-bottom: 10px;
+}
+
+
+#ects-chart {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px black solid;
+    margin-bottom: 10px;
+}
+
+#ects-legend {
+    height: 32px;
+}
+
+#ects-legend div {
+    width: 64px;
+    text-align: center;
+    float: left;
+}
+
+#head-sidebar form, #footer-sidebar form {
+    border: grey 1px solid;
+    padding: 10px;
+}
+
+#head-sidebar form div, #footer-sidebar form div {
+    margin-top: 5px;
+    width: 100%;
+}
+
+#head-sidebar form label, #footer-sidebar form label {
+    margin-bottom: 2px;
+    margin-top: 4px;
+    display: block;
+}
+
+#header-content th, #footer-content th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: white;
+}
+
+#footer-content tfoot {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background-color: white;
+}
+
+.btn {
+    height: 32px;
+    width: 100px;
+    margin: 5px
+}
+
+#footer-content tbody tr:nth-child(even) {
+    background-color: #dedddd;
+}
+
+#footer-content tbody tr:nth-child(odd) {
+    background-color: #c4c4c4;
+}
+
+#title form {
+    margin-top: 5px;
+}
+
+#grade-avg {
+    width: 100px !important;
+}
+
+.timeSlotFrame {
+    padding: 0 !important;
+    margin: 0;
+    height: 25px;
+    max-height: 25px;
+    text-size-adjust: none;
+}
+
+#footer-content td {
+    height: 25px;
+    max-height: 25px;
+}
+
+.calendarRowText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 20px;
+    width: 100%;
+    line-height: 10px;
+}
+
+.calendarRow td {
+    width: 13.5%;
+}
+
+.timeSlotHeader, .timeSlotFrame {
+    border-right: 1px rgba(0, 0, 0, 0.36) solid;
+}
+
+.timeSlot, .timeSlot tr, .timeSlot td {
+    padding: 0;
+    margin: 0;
+}
+
+.timeSlot {
+    height: 100%;
+    font-size: 10px;
+}
+
+.calendarWeekNavigator, .courseHeadSorter {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.timeSlotHeader {
+    padding-top: 0 !important;
+    padding-bottom: 20px !important;
+    font-size: 12px !important;
+}
+
+#form-error-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: rgba(255, 0, 0, 0.61) solid 1px;
+    font-weight: bold;
+    background-color: #fef7f7;
+}
+
+.formError {
+    color: red;
+}
+
