@@ -7,6 +7,8 @@ selbst generiert wurden und beinhalten Einstellungen und Konfigurationen.
 Im **Dashboard** Verzeichnis befinden sich alle für die Phase3 relevanten Dateien,
 die für das Projekt umgesetzt wurden.
 
+Dummy data is added for hans mustermann weeks KW30-KW32. New entries can be created in demand.
+
 # Installationsanleitung
 ## 1. Anforderungen
 1. Python muss mindestens in Version 3.13 installiert sein. Diese Version findet sich auf der Py-thon Website: https://www.python.org/downloads/release/python-3130/
