@@ -5,11 +5,13 @@ This file contains cascading style sheets for the design of the dashboard object
 body {
     font-family: Arial, serif;
     min-width: 1000px;
+    overflow: hidden;
 }
 
 #header-content {
     max-height: 25vh;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 #header-content table, #footer-content table {
@@ -22,7 +24,8 @@ table {
 
 #footer-content {
     max-height: 55vh;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 #header-content th {

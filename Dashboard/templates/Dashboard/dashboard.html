@@ -137,6 +137,7 @@
         <div id="grade-form">
             <form action="/dashboard/" method="post">
                 {% csrf_token %}
+                <b>Grade Management</b>
                 <input type="hidden" name="formType" value="gradeManagement">
                 <div>
                     <label for="course">Course:</label>
@@ -232,6 +233,7 @@
     <div id="footer-sidebar">
         <form action="/dashboard/" id="timePlanManagement" method="post">
             {% csrf_token %}
+            <b>Learn Plan Management</b>
             <div>
                 <label for="course">Course:</label>
                 <select id="course" name="course_id" required>
